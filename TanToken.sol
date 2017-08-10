@@ -1,13 +1,29 @@
 pragma solidity ^0.4.0;
 
+contract owned {
 
+    address public owner;
+
+    function owned() {
+        owner = msg.sender;
+    }
+
+    modifier onlyOwner {
+        if (msg.sender != owner) throw;
+        _;
+    }
+
+    function transferOwnership(address newOwner) onlyOwner {
+        owner = newOwner;
+    }
+}
 /*******************************************************************************
  * ERC Token Standard #20 Interface
  * https://github.com/ethereum/EIPs/issues/20
  *******************************************************************************/
 contract ERC20Interface {
     // Get the total token supply
-    function totalSupply() constant returns (uint256 totalSupply);
+    function totalSupply() constant returns (uint256 totalsSupply);
 
     // Get the account balance of another account with address _owner
     function balanceOf(address _owner) constant returns (uint256 balance);
@@ -34,22 +50,26 @@ contract ERC20Interface {
 }
 
 
-contract TanToken is ERC20Interface {
+contract TanToken is ERC20Interface, owned {
+
+    uint256 public totalSupply; // Total supply of the tokens
+    uint256 supply = 0;
+    address public owner; // Owner of this contract
 
     /* Balance for each account */
     mapping(address => uint256) balances;
     /* True if account holder approves the transfer of an amount to another account */
     mapping (address => mapping (address => uint256)) allowed;
 
-    /* Total supply of the tokens */
-    uint256 public totalSupply;
-
-
-
     /* Initialize the supply */
     function TanToken (uint256 _initialSupply) {
-
+        supply = _initialSupply;
     }
+
+    function totalSupply() constant returns (uint256 totalsSupply){
+        return supply;
+    }
+
 
     /* Transfer an amount from the owner's account to an indicated account */
     function transfer(address _to, uint256 _amount) returns (bool success) {
@@ -89,6 +109,13 @@ contract TanToken is ERC20Interface {
 
     function allowance(address _owner, address _spender) constant returns (uint256 remaining) {
         return allowed[_owner][_spender];
+    }
+
+    function mintToken(address target, uint256 mintedAmount) onlyOwner {
+        balances[target] += mintedAmount;
+        totalSupply += mintedAmount;
+        Transfer(0, owner, mintedAmount);
+        Transfer(owner, target, mintedAmount);
     }
 
 }
