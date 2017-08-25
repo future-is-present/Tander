@@ -16,7 +16,7 @@ contract Market{
         uint itemId
     );
     // Item deleted in the system
-    event Created (
+    event Deleted (
         uint itemId
     );
     //Item bought
@@ -25,11 +25,14 @@ contract Market{
     );
     //Item sold
     event Sold(
-        uint itemId
+        uint itemId,
+        uint price
     );
     //Item listed
     event Listed(
-        uint itemId
+        uint itemId,
+        uint price
+         
     );
     //Item unlisted
     event Unlisted(
@@ -43,6 +46,8 @@ contract Market{
     mapping(uint => uint) public listing;
     //Array of the items
     Item[] public items;
+    // Balances for items sold
+    mapping(address => uint) public balances;
 
     // Check that the sender is the owner of the item
     modifier onlyOwner(uint _itemId) {
@@ -56,50 +61,46 @@ contract Market{
     }
 
     // List an item
-    function list(uint _itemId, uint price) onlyOwner(_recordId) {
+    function list(uint _itemId, uint price) onlyOwner(_itemId) {
         listing[_itemId] = price;
         Listed(_itemId, price);
 
     }
 
     // Un-list an item
-    function unlist(uint _itemId) onlyOwner(_recordId) {
+    function unlist(uint _itemId) onlyOwner(_itemId) {
         require(listing[_itemId] != 0);
         listing[_itemId] = 0;
         Unlisted(_itemId);
     }
 
-    function buy(uint _itemId) onlyOwner {
-        if(listing[_recordId] <= 0
-            || items[_itemId].price <=0
-            || msg.balance < items[_itemId].price
-            || items[_itemId].owner == 0
-        )
-        throw;
+    function buy(uint _itemId) onlyOwner(_itemId) {
+        require(listing[_itemId] > 0);
+        require(items[_itemId].price >0);
+        require(msg.value >= items[_itemId].price);
+        require(items[_itemId].owner > 0);
+        
         listing[_itemId] = 0;
-        balances[ items[_itemId].owner ] += msg.value;
+        balances[items[_itemId].owner] += msg.value;
         items[_itemId].owner = msg.sender;
-        Sold(_recordId,msg.value);
+        Sold(_itemId,msg.value);
 
     }
 
     // Add a new item to the system
-    function addItem(address initialOwner, string description ) onlyOwner returns (uint itemId) {
+    function addItem(address initialOwner, string description, uint price ) onlyOwner(itemId) returns (uint itemId) {
 
-        if(initialOwner == 0
-            || description == 0)
-        throw;
+        require(initialOwner > 0);
 
-        items.push(Record(initialOwner, description, "", imgUrls, warehouse, now, storagePaidThru, storageFee, lateFee,  RecordState.inWarehouse));
+        items.push(Item(initialOwner, description, price));
         itemId = items.length - 1;
 
-        Created(recordId);
+        Created(itemId);
     }
 
-    function changePrice(uint _itemId, uint _price) onlyOwner {
-        if(listing[_itemId] == 0
-        || _price == 0)
-        throw;
+    function changePrice(uint _itemId, uint _price) onlyOwner(_itemId) {
+        require(listing[_itemId] > 0);
+        require(_price > 0);
 
         listing[_itemId] = _price;
 
