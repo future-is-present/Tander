@@ -1,4 +1,4 @@
-pragma solidity 0.4.15;
+pragma solidity 0.4.16;
 
 /// @title Multi-signature token wallet - Allows multiple parties to approve tokens transfer
 /// @author manolodewiner  
@@ -26,7 +26,7 @@ contract MultiSigTokenWallet {
     uint public transactionCount;
 
     struct Transaction {
-        address addressField;
+        address destination;
         uint value;
         TransactionChoices transactionType;
         bool executed;
@@ -39,7 +39,7 @@ contract MultiSigTokenWallet {
     }
 
     modifier transactionSubmitted(uint transactionId) {
-        require (   transactions[transactionId].addressField != 0
+        require (   transactions[transactionId].destination != 0
                  || transactions[transactionId].value != 0);
         _;
     }
@@ -69,11 +69,11 @@ contract MultiSigTokenWallet {
         _;
     }
 
-    modifier validTransaction(address  addressField, uint value, TransactionChoices transactionType) {
-        require (  (transactionType == TransactionChoices.AddOwner      && addressField != 0 && value == 0)
-                || (transactionType == TransactionChoices.ChangeQuorum  && addressField == 0 && value > 0)
-                || (transactionType == TransactionChoices.DeleteTransaction  && addressField == 0 && value > 0)
-                || (transactionType == TransactionChoices.WithdrawOwner && addressField != 0 && value == 0));
+    modifier validTransaction(address  destination, uint value, TransactionChoices transactionType) {
+        require (  (transactionType == TransactionChoices.AddOwner      && destination != 0 && value == 0)
+                || (transactionType == TransactionChoices.ChangeQuorum  && destination == 0 && value > 0)
+                || (transactionType == TransactionChoices.DeleteTransaction  && destination == 0 && value > 0)
+                || (transactionType == TransactionChoices.WithdrawOwner && destination != 0 && value == 0));
         _;
     }
 
@@ -134,17 +134,17 @@ contract MultiSigTokenWallet {
     }
 
     /// @dev Adds a new transaction to the transaction list, if transaction does not exist yet.
-    /// @param addressField address to send token or too add or withadraw as owner.
+    /// @param destination address to send token or too add or withadraw as owner.
     /// @param value number of tokens (useful only for token transfer).
     /// @return Returns transaction ID.
-    function addTransaction(address addressField, uint value, TransactionChoices transactionType)
+    function addTransaction(address destination, uint value, TransactionChoices transactionType)
         private
         returns (uint)
     {
         transactionCount += 1;
         uint transactionId = transactionCount;
         transactions[transactionId] = Transaction({
-            addressField: addressField,
+            destination: destination,
             value: value,
             transactionType: transactionType,
             executed: false,
@@ -167,16 +167,16 @@ contract MultiSigTokenWallet {
    
 
     /// @dev Allows an owner to submit and confirm a transaction.
-    /// @param addressField Transaction target address.
+    /// @param destination Transaction target address.
     /// @param value Number of token / new quorum to reach.
     /// @return Returns transaction ID.
-    function submitTransaction(address addressField, uint value, TransactionChoices transactionType)
+    function submitTransaction(address destination, uint value, TransactionChoices transactionType)
         public
         ownerDeclared(msg.sender)
-        validTransaction(addressField, value, transactionType)
+        validTransaction(destination, value, transactionType)
         returns (uint transactionId)
     {
-        transactionId = addTransaction(addressField, value, transactionType);
+        transactionId = addTransaction(destination, value, transactionType);
         confirmTransaction(transactionId);
     }
 
@@ -217,13 +217,13 @@ contract MultiSigTokenWallet {
             Transaction memory transaction = transactions[transactionId];
             transaction.executed = true;
             if (transaction.transactionType == TransactionChoices.AddOwner)
-                addOwner(transaction.addressField);
+                addOwner(transaction.destination);
             else if (transaction.transactionType == TransactionChoices.ChangeQuorum)
                 changeQuorum(transaction.value);
             else if (transaction.transactionType == TransactionChoices.DeleteTransaction)
                 deleteTransaction(transaction.value);
             else if (transaction.transactionType == TransactionChoices.WithdrawOwner)
-                withdrawOwner(transaction.addressField);
+                withdrawOwner(transaction.destination);
             else
                 revert();
         }
