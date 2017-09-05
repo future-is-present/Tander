@@ -2,6 +2,7 @@ body{
 	background-color:white;
 	 
 }
+
 .color-main{
 	color: #2255ce;
 }
@@ -18,8 +19,9 @@ body{
 	  border-radius: 0px;
 }
 .icon{
-	margin-top:20px;
+	margin-top:10px;
 	padding-right:20px;
+	margin-bottom:3px;
 	
 }
 .icon img{
@@ -35,9 +37,20 @@ body{
     font-stretch: normal;
     font-size: 20px;
     line-height: 1em;
-    color: red;
+    
 	text-align:center;
-	margin-top:20px;
+	margin-top:15px;
+}
+.navbar-default .navbar-nav>li>a{
+	color: white;
+}
+.scrolled{
+	background-color:white;
+	border-bottom:solid;
+	border-color:#ddd
+}
+.scrolled .navbar-nav>li>a{
+	color: #0c1f51;
 }
 /* FIRST IMAGE     */
 .background-first{
@@ -206,6 +219,8 @@ form input[type="submit"] {
 	padding-bottom:35px;
 }
 .footer-distributed .footer-right i{
+	float: left;
+	clear:left;
 	background-color:  #29c9ff;
 	color: #ffffff;
 	font-size: 25px;
@@ -216,6 +231,9 @@ form input[type="submit"] {
 	line-height: 42px;
 	vertical-align: middle;
 	margin-left: 0;
+}
+.footer-distributed .footer-right p{
+	
 }
 .footer-center div{
 	margin-bottom:20px

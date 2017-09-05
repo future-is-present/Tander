@@ -23,7 +23,7 @@
   <!-- NAVBAR
 ================================================== -->
 <div class="navbar-wrapper">
-<nav class="navbar navbar-default">
+<nav class="navbar navbar-default navbar-fixed-top">
   <div class="container">
     <!-- Brand and toggle get grouped for better mobile display -->
     <div class="navbar-header">
@@ -33,17 +33,17 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-	  <span class="pull-left icon"><a href="index.html"><img src="DSlag_logo_cutted_white.png"></a></span> 			
+	  <span class="pull-left icon"><a href="index.html"><img id="nav-icon" src="DSlag_logo_cutted_white.png"></a></span> 			
     </div>
 
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
    
       <ul class="nav navbar-nav navbar-right">
-        <li><a href="#" style="color: white;">Home</a></li>
-		<li><a href="#" style="color: white;">About</a></li>
-		<li><a href="#" style="color: white;">Team</a></li>
-		<li><a href="#" style="color: white;">Link</a></li>
+        <li><a href="#">Home</a></li>
+		<li><a href="#">About</a></li>
+		<li><a href="#">Team</a></li>
+		<li><a href="#">Link</a></li>
        
       </ul>
     </div><!-- /.navbar-collapse -->
@@ -127,7 +127,7 @@
 <div class="why-us" >
           <div class="container">
 		  <div class="divider">
-			
+
 		  </div>
 			  <div>
 				<img class="img roadmap" src="roadmap.png" alt="...">
@@ -191,16 +191,18 @@
 			
 				<div>
 					<i class="fa fa-map-marker"></i>
-					<p><span>Carrer de Valencia 314</span> Barcelona, Spain</p>
+					<p>Carrer de Valencia 314 Barcelona, Spain</p>
 				</div>
 
 				<div>
 					<i class="fa fa-phone"></i>
+					</br>
 					<p>+34 629632222</p>
 				</div>
 
 				<div>
 					<i class="fa fa-envelope"></i>
+					</br>
 					<p><a href="mailto:contact@dslag.co" target="_blank">contact@dslag.co</a></p>
 				</div>
 
@@ -217,6 +219,25 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     <!-- FONT-AWESOME -->
 	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
+	<script type="text/javascript">
+		function checkScroll(){
+			var startY = $('.navbar').height() * 2; //The point where the navbar changes in px
+			var navIcon = document.getElementById("nav-icon");
+			if($(window).scrollTop() > startY){
+				$('.navbar').addClass("scrolled");
+				navIcon.src = "DSlag_logo_cutted.png";
+			}else{
+				$('.navbar').removeClass("scrolled");
+				navIcon.src = "DSlag_logo_cutted_white.png";
+			}
+		}
+
+		if($('.navbar').length > 0){
+			$(window).on("scroll load resize", function(){
+				checkScroll();
+			});
+		}
+	</script>
 
 		
  </body>
