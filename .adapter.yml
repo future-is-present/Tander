@@ -1,0 +1,13 @@
+name: Anyblock Analytics API
+description: Blockchain Data Queries using the Anyblock Analytics API.
+node_identifier: anyblock-api
+platforms:
+  - Docker
+  - AWS Lambda
+  - GCP Functions
+data_sources:
+  - name: Anyblock Analytics API
+    url: https://anyblockanalytics.com
+parameters:
+  - query
+  - id
