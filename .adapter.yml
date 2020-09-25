@@ -1,12 +1,12 @@
-name: Another different name
-description: Blockchain Data for testing purposes.
+name: New one name
+description: Blockchain for life.
 node_identifier: anyblock-api
 platforms:
   - Docker
   - AWS Lambda
   - GCP Functions
 data_sources:
-  - name: Trying changing this
+  - name: Test this change
     url: https://anyblockanalytics.com
 parameters:
   - query
