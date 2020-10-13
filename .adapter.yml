@@ -5,9 +5,3 @@ platforms:
   - Docker
   - AWS Lambda
   - GCP Functions
-data_sources:
-  - name: Test this change
-    url: https://anyblockanalytics.com
-parameters:
-  - query
-  - id
