@@ -1,6 +1,6 @@
 name: New one name
 description: Blockchain for life.
-node_identifier: anyblock-api
+node_identifier: test-api
 platforms:
   - Docker
   - AWS Lambda
